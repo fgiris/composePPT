@@ -1,24 +1,17 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+buildscript {
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
+    }
 
-plugins {
-    kotlin("jvm") version "1.6.20"
+    repositories {
+        mavenCentral()
+        google()
+    }
 }
 
-group = "com.fatihgiris"
-version = "0.1.0"
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+allprojects {
+    repositories {
+        mavenCentral()
+        google()
+    }
 }
