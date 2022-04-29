@@ -2,7 +2,6 @@ package com.fatihgiris.composePPT
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.withRunningRecomposer
 import com.fatihgiris.composePPT.graphics.LogcatDisplay
 import com.fatihgiris.composePPT.graphics.TextCanvas
@@ -27,8 +26,6 @@ fun runComposePPT(content: @Composable () -> Unit) = runBlocking {
         }
 
         withRunningRecomposer { recomposer ->
-            // TODO: Dispose the composition when the app is closed OR no running job
-            //  such as a job inside LaunchEffect
             val composition = rootNode.setContent(recomposer, content)
 
             // Launching a new coroutine inside the withRunningRecomposer lambda since it will
@@ -36,6 +33,13 @@ fun runComposePPT(content: @Composable () -> Unit) = runBlocking {
             launch { frameClock.dispatchFrame(1000L) }
 
             display(rootNode)
+
+            // TODO: Do not end the composition right away and support long running tasks
+            //  such as the jobs inside the side effects
+
+            // End the composition
+            recomposer.close()
+            composition.dispose()
         }
     }
 }
