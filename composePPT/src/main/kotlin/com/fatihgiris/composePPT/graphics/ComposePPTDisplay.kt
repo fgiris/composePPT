@@ -12,7 +12,7 @@ internal interface ComposePPTDisplay {
     /**
      * Translates and draws the given [content] to the display unit.
      */
-    fun draw(content: ComposePPTCanvasContent)
+    fun display(content: ComposePPTCanvasContent)
 }
 
 /**
@@ -21,14 +21,14 @@ internal interface ComposePPTDisplay {
  */
 class LogcatDisplay : ComposePPTDisplay {
 
-    override fun draw(content: ComposePPTCanvasContent) {
+    override fun display(content: ComposePPTCanvasContent) {
         when (content) {
             is ComposePPTCanvasContent.TextContent -> {
                 drawText(content)
             }
             is ComposePPTCanvasContent.ListContent -> {
                 content.contentList.forEach {
-                    draw(it)
+                    display(it)
                 }
             }
         }

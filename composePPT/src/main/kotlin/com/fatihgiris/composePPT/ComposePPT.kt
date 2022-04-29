@@ -61,8 +61,8 @@ private suspend fun BroadcastFrameClock.dispatchFrame(refreshRateMillis: Long) {
  * Renders and draws the content created for [rootNode] on a display.
  */
 private fun display(rootNode: ComposePPTNode) {
-    val display = LogcatDisplay()
+    val logcatDisplay = LogcatDisplay()
     val canvas = TextCanvas()
 
-    display.draw(rootNode.render(canvas))
+    logcatDisplay.display(rootNode.render(canvas))
 }
