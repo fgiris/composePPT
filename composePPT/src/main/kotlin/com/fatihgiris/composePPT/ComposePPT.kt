@@ -4,7 +4,7 @@ import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.withRunningRecomposer
 import com.fatihgiris.composePPT.graphics.LogcatDisplay
-import com.fatihgiris.composePPT.graphics.TextCanvas
+import com.fatihgiris.composePPT.graphics.ComposePPTCanvas
 import com.fatihgiris.composePPT.node.ComposePPTNode
 import com.fatihgiris.composePPT.node.ListNode
 import com.fatihgiris.composePPT.node.setContent
@@ -62,7 +62,7 @@ private suspend fun BroadcastFrameClock.dispatchFrame(refreshRateMillis: Long) {
  */
 private fun display(rootNode: ComposePPTNode) {
     val logcatDisplay = LogcatDisplay()
-    val canvas = TextCanvas()
+    val canvas = ComposePPTCanvas()
 
     logcatDisplay.display(rootNode.render(canvas))
 }

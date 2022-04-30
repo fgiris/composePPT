@@ -5,7 +5,7 @@ import com.fatihgiris.composePPT.ComposePPTCanvasContent
 /**
  * A canvas for rendering the content onto.
  */
-interface ComposePPTCanvas {
+interface Canvas {
 
     /**
      * Renders and returns the content.
@@ -14,9 +14,9 @@ interface ComposePPTCanvas {
 }
 
 /**
- * A text canvas which only renders [ComposePPTCanvasContent.TextContent].
+ * A canvas which only renders [ComposePPTCanvasContent].
  */
-class TextCanvas : ComposePPTCanvas {
+class ComposePPTCanvas : Canvas {
     private var text: String = ""
 
     fun writeText(text: String) {

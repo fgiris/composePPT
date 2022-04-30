@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.CompositionContext
 import com.fatihgiris.composePPT.ComposePPTCanvasContent
-import com.fatihgiris.composePPT.graphics.TextCanvas
+import com.fatihgiris.composePPT.graphics.ComposePPTCanvas
 
 /**
  * A base node to represent any node in composePPT in slot table.
@@ -16,7 +16,7 @@ abstract class ComposePPTNode {
     /**
      * Renders the current node to the [canvas] and returns the content.
      */
-    abstract fun render(canvas: TextCanvas): ComposePPTCanvasContent
+    abstract fun render(canvas: ComposePPTCanvas): ComposePPTCanvasContent
 }
 
 /**

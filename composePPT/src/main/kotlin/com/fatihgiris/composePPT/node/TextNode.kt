@@ -1,7 +1,7 @@
 package com.fatihgiris.composePPT.node
 
 import com.fatihgiris.composePPT.ComposePPTCanvasContent
-import com.fatihgiris.composePPT.graphics.TextCanvas
+import com.fatihgiris.composePPT.graphics.ComposePPTCanvas
 
 /**
  * A text element in the tree built with composePPT.
@@ -9,7 +9,7 @@ import com.fatihgiris.composePPT.graphics.TextCanvas
 class TextNode : ComposePPTNode() {
     var text: String = ""
 
-    override fun render(canvas: TextCanvas): ComposePPTCanvasContent {
+    override fun render(canvas: ComposePPTCanvas): ComposePPTCanvasContent {
         canvas.writeText(text)
         return canvas.render()
     }
