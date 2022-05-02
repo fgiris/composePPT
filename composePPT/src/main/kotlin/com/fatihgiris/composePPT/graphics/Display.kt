@@ -7,7 +7,7 @@ import com.fatihgiris.composePPT.ComposePPTCanvasContent
  * if the display only supports displaying texts then it can translate the content to
  * text and draw it.
  */
-internal interface ComposePPTDisplay {
+internal interface Display {
 
     /**
      * Translates and draws the given [content] to the display unit.
@@ -19,12 +19,12 @@ internal interface ComposePPTDisplay {
  * A logcat display to draw the [ComposePPTCanvasContent]. This display can be used for
  * debugging purposes.
  */
-class LogcatDisplay : ComposePPTDisplay {
+class LogcatDisplay : Display {
 
     override fun display(content: ComposePPTCanvasContent) {
         when (content) {
             is ComposePPTCanvasContent.TextContent -> {
-                drawText(content)
+                doDisplay(content)
             }
             is ComposePPTCanvasContent.ListContent -> {
                 content.contentList.forEach {
@@ -34,7 +34,7 @@ class LogcatDisplay : ComposePPTDisplay {
         }
     }
 
-    private fun drawText(textContent: ComposePPTCanvasContent.TextContent) {
+    private fun doDisplay(textContent: ComposePPTCanvasContent.TextContent) {
         println(textContent.text)
     }
 }
