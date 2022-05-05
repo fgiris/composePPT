@@ -9,8 +9,14 @@ import com.fatihgiris.composePPT.graphics.ComposePPTCanvas
 class TextNode : ComposePPTNode() {
     var text: String = ""
 
+    override var positionIndex: Int = 0
+
+    override fun layout() {
+        // No child node. Parent will adjust the position index.
+    }
+
     override fun render(canvas: ComposePPTCanvas): ComposePPTCanvasContent {
-        canvas.writeText(text)
+        canvas.drawText(text, positionIndex)
         return canvas.render()
     }
 }

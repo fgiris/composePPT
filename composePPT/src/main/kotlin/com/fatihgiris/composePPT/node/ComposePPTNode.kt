@@ -11,7 +11,22 @@ import com.fatihgiris.composePPT.graphics.ComposePPTCanvas
  * A base node to represent any node in composePPT in slot table.
  */
 abstract class ComposePPTNode {
+
+    /**
+     * Ideally this is a coordinate rather than index. But for the simplicity,
+     * only position index inside the node hierarchy is used.
+     */
+    open var positionIndex: Int = 0
+
+    /**
+     * The children of this node.
+     */
     val children = mutableListOf<ComposePPTNode>()
+
+    /**
+     * This function measures the bounds of the node.
+     */
+    abstract fun layout()
 
     /**
      * Renders the current node to the [canvas] and returns the content.

@@ -3,14 +3,25 @@ package com.fatihgiris.composePPT
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.withRunningRecomposer
-import com.fatihgiris.composePPT.graphics.LogcatDisplay
 import com.fatihgiris.composePPT.graphics.ComposePPTCanvas
+import com.fatihgiris.composePPT.graphics.ComposePPTDisplay
 import com.fatihgiris.composePPT.node.ComposePPTNode
 import com.fatihgiris.composePPT.node.ListNode
 import com.fatihgiris.composePPT.node.setContent
 import kotlinx.coroutines.*
 
-fun runComposePPT(content: @Composable () -> Unit) = runBlocking {
+/**
+ * Creates a presentation with the [presentationFileName] from the [content].
+ *
+ * @param content The content of the presentation. This block should only contain
+ * the composables defined in composePPT.
+ *
+ * @param presentationFileName The file name of the presentation without a file extension
+ */
+fun runComposePPT(
+    presentationFileName: String = "composePPT",
+    content: @Composable () -> Unit
+) = runBlocking {
     val frameClock = BroadcastFrameClock()
     val effectCoroutineContext = Job(coroutineContext[Job]) + frameClock
     val compositionScope = CoroutineScope(effectCoroutineContext)
@@ -32,7 +43,7 @@ fun runComposePPT(content: @Composable () -> Unit) = runBlocking {
             // wait all jobs to be finished inside this lambda to close the recomposer
             launch { frameClock.dispatchFrame(1000L) }
 
-            display(rootNode)
+            display(rootNode, presentationFileName)
 
             // TODO: Do not end the composition right away and support long running tasks
             //  such as the jobs inside the side effects
@@ -40,6 +51,7 @@ fun runComposePPT(content: @Composable () -> Unit) = runBlocking {
             // End the composition
             recomposer.close()
             composition.dispose()
+            compositionScope.cancel()
         }
     }
 }
@@ -58,10 +70,14 @@ private suspend fun BroadcastFrameClock.dispatchFrame(refreshRateMillis: Long) {
 }
 
 /**
- * Renders and draws the content created for [rootNode] on a display.
+ * Renders and draws the content created for [rootNode] on a display to an exported file
+ * named [presentationFileName],
  */
-private fun display(rootNode: ComposePPTNode) {
-    val logcatDisplay = LogcatDisplay()
+private fun display(
+    rootNode: ComposePPTNode,
+    presentationFileName: String
+) {
+    val logcatDisplay = ComposePPTDisplay(presentationFileName)
     val canvas = ComposePPTCanvas()
 
     logcatDisplay.display(rootNode.render(canvas))
