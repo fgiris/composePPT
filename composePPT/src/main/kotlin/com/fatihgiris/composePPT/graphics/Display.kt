@@ -3,6 +3,7 @@ package com.fatihgiris.composePPT.graphics
 import com.fatihgiris.composePPT.ComposePPTCanvasContent
 import org.apache.poi.xslf.usermodel.SlideLayout
 import org.apache.poi.xslf.usermodel.XMLSlideShow
+import org.apache.poi.xslf.usermodel.XSLFSlide
 import java.io.FileOutputStream
 
 /**
@@ -34,6 +35,9 @@ internal class LogcatDisplay : Display {
                     display(it)
                 }
             }
+            is ComposePPTCanvasContent.SlideContent -> {
+                display(content.content)
+            }
         }
     }
 
@@ -53,16 +57,7 @@ class ComposePPTDisplay(
 
     private val slideShow = XMLSlideShow()
 
-    private val slide = with(slideShow) {
-        val layout = slideMasters[0].getLayout(SlideLayout.TITLE_AND_CONTENT)
-
-        // Only single slide is supported for now
-        createSlide(layout)
-    }
-
-    init {
-        clearPlaceholdersText()
-    }
+    private lateinit var currentSlide: XSLFSlide
 
     override fun display(content: ComposePPTCanvasContent) {
         when (content) {
@@ -74,17 +69,31 @@ class ComposePPTDisplay(
                     display(it)
                 }
             }
+            is ComposePPTCanvasContent.SlideContent -> {
+                createSlide()
+                clearPlaceholdersText()
+                display(content.content)
+            }
+        }
+    }
+
+    private fun createSlide() {
+        currentSlide = with(slideShow) {
+            val layout = slideMasters[0].getLayout(SlideLayout.TITLE_AND_CONTENT)
+
+            // Only single slide is supported for now
+            createSlide(layout)
         }
     }
 
     private fun clearPlaceholdersText() {
         // There is a default text in the placeholders. So clear them.
-        slide.placeholders.forEach { it.text = "" }
+        currentSlide.placeholders.forEach { it.text = "" }
     }
 
     private fun doDisplay(content: ComposePPTCanvasContent.TextContent) {
         // Add new paragraph to the body with a given text content
-        slide.placeholders[1].addNewTextParagraph().addNewTextRun().setText(content.text)
+        currentSlide.placeholders[1].addNewTextParagraph().addNewTextRun().setText(content.text)
 
         writeSlideShowToFile()
     }
