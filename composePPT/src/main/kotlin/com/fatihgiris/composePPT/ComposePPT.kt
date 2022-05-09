@@ -77,8 +77,8 @@ private fun display(
     rootNode: ComposePPTNode,
     presentationFileName: String
 ) {
-    val logcatDisplay = ComposePPTDisplay(presentationFileName)
+    val composePPTDisplay = ComposePPTDisplay(presentationFileName)
     val canvas = ComposePPTCanvas()
 
-    logcatDisplay.display(rootNode.render(canvas))
+    composePPTDisplay.display(rootNode.render(canvas))
 }
