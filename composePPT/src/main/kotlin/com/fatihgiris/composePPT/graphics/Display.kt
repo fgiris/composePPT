@@ -38,6 +38,11 @@ internal class LogcatDisplay : Display {
             is ComposePPTCanvasContent.SlideContent -> {
                 display(content.content)
             }
+            is ComposePPTCanvasContent.PresentationContent -> {
+                content.slides.forEach {
+                    display(it)
+                }
+            }
         }
     }
 
@@ -73,6 +78,11 @@ class ComposePPTDisplay(
                 createSlide()
                 clearPlaceholdersText()
                 display(content.content)
+            }
+            is ComposePPTCanvasContent.PresentationContent -> {
+                content.slides.forEach {
+                    display(it)
+                }
             }
         }
     }

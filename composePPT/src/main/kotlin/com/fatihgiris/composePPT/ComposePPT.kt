@@ -6,7 +6,7 @@ import androidx.compose.runtime.withRunningRecomposer
 import com.fatihgiris.composePPT.graphics.ComposePPTCanvas
 import com.fatihgiris.composePPT.graphics.ComposePPTDisplay
 import com.fatihgiris.composePPT.node.ComposePPTNode
-import com.fatihgiris.composePPT.node.ListNode
+import com.fatihgiris.composePPT.node.PresentationNode
 import com.fatihgiris.composePPT.node.setContent
 import kotlinx.coroutines.*
 
@@ -27,7 +27,7 @@ fun runComposePPT(
     val compositionScope = CoroutineScope(effectCoroutineContext)
 
     // Create a root node to be given to applier during the composition creation
-    val rootNode = ListNode()
+    val rootNode = PresentationNode()
 
     compositionScope.launch {
         launch {

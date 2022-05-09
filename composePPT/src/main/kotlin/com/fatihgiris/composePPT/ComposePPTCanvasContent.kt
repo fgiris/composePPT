@@ -25,4 +25,12 @@ sealed interface ComposePPTCanvasContent {
     class SlideContent(
         val content: ComposePPTCanvasContent
     ) : ComposePPTCanvasContent
+
+
+    /**
+     * A content which has list of [SlideContent].
+     */
+    class PresentationContent(
+        val slides: List<SlideContent>
+    ) : ComposePPTCanvasContent
 }
