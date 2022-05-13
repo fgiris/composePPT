@@ -1,3 +1,5 @@
+package node
+
 import com.fatihgiris.composePPT.foundation.slide.Slide
 import com.fatihgiris.composePPT.foundation.text.Text
 import com.fatihgiris.composePPT.runComposePPT
