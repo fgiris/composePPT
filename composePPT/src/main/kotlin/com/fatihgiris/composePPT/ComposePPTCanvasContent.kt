@@ -22,9 +22,18 @@ sealed interface ComposePPTCanvasContent {
     /**
      * A content which has a single [ComposePPTCanvasContent].
      */
-    class SlideContent(
-        val content: ComposePPTCanvasContent
-    ) : ComposePPTCanvasContent
+    sealed class SlideContent(
+        open val content: ComposePPTCanvasContent
+    ) : ComposePPTCanvasContent {
+        class TitleAndBodyContent(
+            val title: String,
+            override val content: ComposePPTCanvasContent
+        ) : SlideContent(content)
+
+        class OnlyBodyContent(
+            override val content: ComposePPTCanvasContent
+        ) : SlideContent(content)
+    }
 
 
     /**

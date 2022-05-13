@@ -4,6 +4,8 @@ import com.fatihgiris.composePPT.ComposePPTCanvasContent
 import org.apache.poi.xslf.usermodel.SlideLayout
 import org.apache.poi.xslf.usermodel.XMLSlideShow
 import org.apache.poi.xslf.usermodel.XSLFSlide
+import org.apache.poi.xslf.usermodel.XSLFTextShape
+import java.awt.Rectangle
 import java.io.FileOutputStream
 
 /**
@@ -75,8 +77,9 @@ class ComposePPTDisplay(
                 }
             }
             is ComposePPTCanvasContent.SlideContent -> {
-                createSlide()
+                createSlide(content)
                 clearPlaceholdersText()
+                setSlideTitle(content)
                 display(content.content)
             }
             is ComposePPTCanvasContent.PresentationContent -> {
@@ -87,12 +90,25 @@ class ComposePPTDisplay(
         }
     }
 
-    private fun createSlide() {
+    private fun createSlide(slideContent: ComposePPTCanvasContent.SlideContent) {
         currentSlide = with(slideShow) {
-            val layout = slideMasters[0].getLayout(SlideLayout.TITLE_AND_CONTENT)
+            val slideLayout = when (slideContent) {
+                is ComposePPTCanvasContent.SlideContent.OnlyBodyContent -> SlideLayout.BLANK
+                is ComposePPTCanvasContent.SlideContent.TitleAndBodyContent -> {
+                    SlideLayout.TITLE_AND_CONTENT
+                }
+            }
+
+            val layout = slideMasters[0].getLayout(slideLayout)
 
             // Only single slide is supported for now
             createSlide(layout)
+        }
+    }
+
+    private fun setSlideTitle(slideContent: ComposePPTCanvasContent.SlideContent) {
+        if (slideContent is ComposePPTCanvasContent.SlideContent.TitleAndBodyContent) {
+            currentSlide.placeholders[0].text = slideContent.title
         }
     }
 
@@ -103,9 +119,32 @@ class ComposePPTDisplay(
 
     private fun doDisplay(content: ComposePPTCanvasContent.TextContent) {
         // Add new paragraph to the body with a given text content
-        currentSlide.placeholders[1].addNewTextParagraph().addNewTextRun().setText(content.text)
-
+        getTextBox().addNewTextParagraph().addNewTextRun().setText(content.text)
         writeSlideShowToFile()
+    }
+
+    private fun getTextBox(): XSLFTextShape {
+        return if (currentSlide.placeholders.isNotEmpty()) {
+            // Title and body slide
+            currentSlide.placeholders[1]
+        } else {
+            // Blank slide
+            currentSlide.createTextBox().also {
+                it.clearText()
+
+                // Currently, positioning to the top left
+                it.anchor = getTopLeftRectangle()
+            }
+        }
+    }
+
+    private fun getTopLeftRectangle(): Rectangle {
+        return Rectangle(
+            10,
+            10,
+            slideShow.pageSize.width,
+            slideShow.pageSize.height
+        )
     }
 
     private fun writeSlideShowToFile() {
