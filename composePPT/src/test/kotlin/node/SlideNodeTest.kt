@@ -9,7 +9,8 @@ import org.junit.jupiter.api.assertThrows
 
 class SlideNodeTest {
 
-    @Test fun ensureSlideNodeInsideSlideNodeThrowsException() {
+    @Test
+    fun ensureSlideNodeInsideSlideNodeThrowsException() {
         assertThrows<IllegalArgumentException> {
             runComposePPT {
                 Slide { Slide { Text("") } }
@@ -17,7 +18,8 @@ class SlideNodeTest {
         }
     }
 
-    @Test fun ensureEmptyContentForSlideNodeThrowsException() {
+    @Test
+    fun ensureEmptyContentForSlideNodeThrowsException() {
         assertThrows<IllegalArgumentException> {
             runComposePPT {
                 Slide {}
@@ -25,7 +27,8 @@ class SlideNodeTest {
         }
     }
 
-    @Test fun ensureSlideNodeWithMultipleChildNodesThrowsException() {
+    @Test
+    fun ensureSlideNodeWithMultipleChildNodesThrowsException() {
         assertThrows<IllegalArgumentException> {
             runComposePPT {
                 Slide {
@@ -36,7 +39,8 @@ class SlideNodeTest {
         }
     }
 
-    @Test fun ensureSlideNodeWithSingleChildNodeDoesNotThrowException() {
+    @Test
+    fun ensureSlideNodeWithSingleChildNodeDoesNotThrowException() {
         assertDoesNotThrow {
             runComposePPT {
                 Slide {
