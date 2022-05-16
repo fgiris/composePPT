@@ -119,7 +119,12 @@ class ComposePPTDisplay(
 
     private fun doDisplay(content: ComposePPTCanvasContent.TextContent) {
         // Add new paragraph to the body with a given text content
-        getTextBox().addNewTextParagraph().addNewTextRun().setText(content.text)
+        getTextBox().addNewTextParagraph().addNewTextRun().apply {
+            setText(content.text)
+            fontSize = content.style.fontSize.toDouble()
+            setFontColor(content.style.fontColor)
+        }
+
         writeSlideShowToFile()
     }
 

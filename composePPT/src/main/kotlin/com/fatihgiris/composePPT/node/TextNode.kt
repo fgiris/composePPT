@@ -1,6 +1,8 @@
 package com.fatihgiris.composePPT.node
 
 import com.fatihgiris.composePPT.ComposePPTCanvasContent
+import com.fatihgiris.composePPT.foundation.text.DefaultTextStyle
+import com.fatihgiris.composePPT.foundation.text.TextStyle
 import com.fatihgiris.composePPT.graphics.ComposePPTCanvas
 
 /**
@@ -8,6 +10,7 @@ import com.fatihgiris.composePPT.graphics.ComposePPTCanvas
  */
 class TextNode : ComposePPTNode() {
     var text: String = ""
+    var style: TextStyle = DefaultTextStyle
 
     override var positionIndex: Int = 0
 
@@ -16,7 +19,12 @@ class TextNode : ComposePPTNode() {
     }
 
     override fun render(canvas: ComposePPTCanvas): ComposePPTCanvasContent {
-        canvas.drawText(text, positionIndex)
+        canvas.drawText(
+            text,
+            positionIndex,
+            style
+        )
+
         return canvas.render()
     }
 }

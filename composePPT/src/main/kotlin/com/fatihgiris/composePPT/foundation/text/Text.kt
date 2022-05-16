@@ -11,10 +11,14 @@ import com.fatihgiris.composePPT.node.TextNode
  * @param text The text to be displayed.
  */
 @Composable
-fun Text(text: String) {
+fun Text(
+    text: String,
+    style: TextStyle = DefaultTextStyle
+) {
     ComposeNode<TextNode, ComposePPTNodeApplier>(
         factory = ::TextNode
     ) {
         set(text) { this.text = it }
+        set(style) { this.style = it }
     }
 }

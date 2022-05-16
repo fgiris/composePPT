@@ -1,6 +1,7 @@
 package com.fatihgiris.composePPT.graphics
 
 import com.fatihgiris.composePPT.ComposePPTCanvasContent
+import com.fatihgiris.composePPT.foundation.text.TextStyle
 
 /**
  * A canvas for rendering the content onto.
@@ -13,9 +14,14 @@ interface Canvas {
     fun render(): ComposePPTCanvasContent
 
     /**
-     * Draws the [text] to the [positionIndex] in the content list on the canvas.
+     * Draws the [text] to the [positionIndex] with a given [style]
+     * in the content list on the canvas.
      */
-    fun drawText(text: String, positionIndex: Int)
+    fun drawText(
+        text: String,
+        positionIndex: Int,
+        style: TextStyle
+    )
 }
 
 /**
@@ -27,8 +33,12 @@ class ComposePPTCanvas : Canvas {
     // Keeps the content for the canvas as (position, element)
     private val content = hashMapOf<Int, ComposePPTCanvasContent>()
 
-    override fun drawText(text: String, positionIndex: Int) {
-        content[positionIndex] = ComposePPTCanvasContent.TextContent(text)
+    override fun drawText(
+        text: String,
+        positionIndex: Int,
+        style: TextStyle
+    ) {
+        content[positionIndex] = ComposePPTCanvasContent.TextContent(text, style)
     }
 
     override fun render(): ComposePPTCanvasContent {
