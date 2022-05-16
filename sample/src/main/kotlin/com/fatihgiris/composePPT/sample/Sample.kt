@@ -1,13 +1,21 @@
 package com.fatihgiris.composePPT.sample
 
+import androidx.compose.runtime.LaunchedEffect
 import com.fatihgiris.composePPT.foundation.list.List
 import com.fatihgiris.composePPT.foundation.slide.Slide
 import com.fatihgiris.composePPT.foundation.text.Text
 import com.fatihgiris.composePPT.runComposePPT
+import kotlinx.coroutines.*
 
 fun main() {
     runComposePPT(presentationFileName = "composePPT") {
         Slide(title = "ComposePPT") {
+
+            LaunchedEffect(Unit) {
+                delay(100)
+                println("You can use side effects with composePPT 💪")
+            }
+
             List {
                 Text(
                     text = "ComposePPT is a UI toolkit to create PowerPoint " +

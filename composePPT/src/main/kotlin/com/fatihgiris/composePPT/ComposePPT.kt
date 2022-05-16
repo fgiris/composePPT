@@ -2,6 +2,7 @@ package com.fatihgiris.composePPT
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Composition
 import androidx.compose.runtime.withRunningRecomposer
 import com.fatihgiris.composePPT.graphics.ComposePPTCanvas
 import com.fatihgiris.composePPT.graphics.ComposePPTDisplay
@@ -23,46 +24,69 @@ fun runComposePPT(
     content: @Composable () -> Unit
 ) = runBlocking {
     val frameClock = BroadcastFrameClock()
+
+    // This context is used to run Recomposer. Parenting the job to the runBlocking
+    // in order to be able to cancel during the cancellation of all children
     val effectCoroutineContext = Job(coroutineContext[Job]) + frameClock
-    val compositionScope = CoroutineScope(effectCoroutineContext)
 
     // Create a root node to be given to applier during the composition creation
     val rootNode = PresentationNode()
 
-    compositionScope.launch {
-        launch {
-            // This wires up the callbacks needed for the state object changes. Without this
-            // there will be no recomposition if any of the state object changes.
-            SnapshotManager.ensureStarted()
-        }
+    lateinit var composition: Composition
 
+    launch {
+        // This wires up the callbacks needed for the state object changes. Without this
+        // there will be no recomposition if any of the state object changes.
+        SnapshotManager.ensureStarted()
+    }
+
+    // Launching with effect coroutine context since this context will be used to
+    // check & cancel depending on if there is any job ongoing with composition.
+    launch(effectCoroutineContext) {
+        // Start the initial composition
         withRunningRecomposer { recomposer ->
-            val composition = rootNode.setContent(recomposer, content)
-
-            // Launching a new coroutine inside the withRunningRecomposer lambda since it will
-            // wait all jobs to be finished inside this lambda to close the recomposer
-            launch { frameClock.dispatchFrame(1000L) }
-
-            display(rootNode, presentationFileName)
-
-            // TODO: Do not end the composition right away and support long running tasks
-            //  such as the jobs inside the side effects
-
-            // End the composition
-            recomposer.close()
-            composition.dispose()
-            compositionScope.cancel()
+            composition = rootNode.setContent(recomposer, content)
         }
+    }
+
+    launch {
+        frameClock.dispatchFrame(
+            refreshRateMillis = 500L,
+            timeNanos = {
+                System.nanoTime()
+            },
+            frameCallback = {
+                display(rootNode, presentationFileName)
+
+                val hasUncompletedJob = effectCoroutineContext.job.children.any { !it.isCompleted }
+
+                if (!hasUncompletedJob) {
+                    // This will dispose the composition and send forget events to
+                    // remember observers (i.e DisposableEffect)
+                    composition.dispose()
+
+                    // Cancel all child coroutines started from this runBlocking in order to
+                    // end the process
+                    this@runBlocking.coroutineContext.cancelChildren()
+                }
+            }
+        )
     }
 }
 
 /**
- * Sends a frame to the clock with a given [refreshRateMillis] interval.
+ * Sends a frame to the clock with a given [refreshRateMillis] interval
+ * while sending the time nanos from [timeNanos] and executes
+ * [frameCallback] afterwards.
  */
-private suspend fun BroadcastFrameClock.dispatchFrame(refreshRateMillis: Long) {
+internal suspend fun BroadcastFrameClock.dispatchFrame(
+    refreshRateMillis: Long,
+    timeNanos: () -> Long,
+    frameCallback: () -> Unit = {}
+) {
     while (true) {
-        // Time nanos is only being used with animations in compose UI. Ignore it for now.
-        sendFrame(0L)
+        sendFrame(timeNanos())
+        frameCallback()
 
         // Refresh rate for each frame
         delay(refreshRateMillis)
