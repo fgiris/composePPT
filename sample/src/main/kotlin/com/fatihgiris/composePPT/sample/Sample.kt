@@ -1,8 +1,10 @@
 package com.fatihgiris.composePPT.sample
 
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import com.fatihgiris.composePPT.foundation.list.List
 import com.fatihgiris.composePPT.foundation.slide.Slide
+import com.fatihgiris.composePPT.foundation.text.LocalTextStyle
 import com.fatihgiris.composePPT.foundation.text.Text
 import com.fatihgiris.composePPT.foundation.text.TextStyle
 import com.fatihgiris.composePPT.runComposePPT
@@ -61,6 +63,24 @@ fun main() {
                         fontColor = Color.MAGENTA
                     )
                 )
+
+                val smallRedTextStyle = TextStyle(
+                    fontSize = 10f,
+                    fontColor = Color.RED
+                )
+
+                CompositionLocalProvider(
+                   LocalTextStyle provides smallRedTextStyle
+                ) {
+                    Text(
+                        text = "This text is using the provided custom text style through " +
+                                "LocalTextStyle composition local."
+                    )
+                    Text(
+                        text = "If you check this and above text element there is no style set " +
+                                "but they both have the same style which is different than default."
+                    )
+                }
             }
         }
     }
