@@ -2,10 +2,8 @@ import org.jetbrains.kotlin.gradle.plugin.PLUGIN_CLASSPATH_CONFIGURATION_NAME
 
 plugins {
     id("kotlin")
+    id("com.vanniktech.maven.publish")
 }
-
-group = "com.fatihgiris.composePPT"
-version = "0.1.0"
 
 dependencies {
     api("org.jetbrains.compose.runtime:runtime:1.1.1")
@@ -21,4 +19,15 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+allprojects {
+    group = "com.fatihgiris.composePPT"
+    version = "0.1.0"
+
+    plugins.withId("com.vanniktech.maven.publish") {
+        mavenPublish {
+            sonatypeHost = com.vanniktech.maven.publish.SonatypeHost.S01
+        }
+    }
 }
