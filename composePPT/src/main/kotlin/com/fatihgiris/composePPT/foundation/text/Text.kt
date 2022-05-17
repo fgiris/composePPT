@@ -9,6 +9,7 @@ import com.fatihgiris.composePPT.node.TextNode
  * A core element to display the text.
  *
  * @param text The text to be displayed.
+ * @param style Style configuration for the text such as font size and color.
  */
 @Composable
 fun Text(
