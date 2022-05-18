@@ -113,6 +113,26 @@ class ComposePPTTest {
     }
 
     @Test
+    fun stateValueRemembered() {
+        val expectedValue = 1
+
+        runComposePPT {
+            var rememberedStateValue by remember { mutableStateOf(0) }
+
+            LaunchedEffect(Unit) {
+                delay(1000)
+                rememberedStateValue = expectedValue
+            }
+
+            DisposableEffect(Unit) {
+                onDispose {
+                    assert(rememberedStateValue == expectedValue)
+                }
+            }
+        }
+    }
+
+    @Test
     fun dispatchFrameSendsTimeNanosToFrameAwaiters() {
         runBlocking {
             val frameClock = BroadcastFrameClock()
