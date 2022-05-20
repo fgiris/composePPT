@@ -2,6 +2,8 @@ package com.fatihgiris.composePPT.sample
 
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import com.fatihgiris.composePPT.foundation.list.List
 import com.fatihgiris.composePPT.foundation.slide.Slide
 import com.fatihgiris.composePPT.foundation.text.LocalTextStyle
@@ -10,9 +12,11 @@ import com.fatihgiris.composePPT.foundation.text.TextStyle
 import com.fatihgiris.composePPT.runComposePPT
 import kotlinx.coroutines.*
 import java.awt.Color
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 fun main() {
-    runComposePPT(presentationFileName = "composePPT") {
+    runComposePPT(presentationFileName = "composePPTSample") {
         Slide(title = "ComposePPT") {
 
             LaunchedEffect(Unit) {
@@ -70,7 +74,7 @@ fun main() {
                 )
 
                 CompositionLocalProvider(
-                   LocalTextStyle provides smallRedTextStyle
+                    LocalTextStyle provides smallRedTextStyle
                 ) {
                     Text(
                         text = "This text is using the provided custom text style through " +
@@ -81,6 +85,24 @@ fun main() {
                                 "but they both have the same style which is different than default."
                     )
                 }
+            }
+        }
+
+        Slide("Side Effects") {
+            var textToUpdate by remember {
+                mutableStateOf("I will be updated in LaunchedEffect after some delay")
+            }
+
+            LaunchedEffect(Unit) {
+                delay(100)
+                textToUpdate =
+                    "If you see this text, it means initial text is updated after some delay in LaunchedEffect 🎉"
+            }
+
+            List {
+                Text("You can use side effects (LaunchedEffect, SideEffect, DisposableEffect) with composePPT 🤩")
+                Text("The text below is read from a state value which is updated after some delay in LaunchedEffect")
+                Text(textToUpdate)
             }
         }
     }

@@ -1,9 +1,6 @@
 package com.fatihgiris.composePPT
 
-import androidx.compose.runtime.BroadcastFrameClock
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Composition
-import androidx.compose.runtime.withRunningRecomposer
+import androidx.compose.runtime.*
 import com.fatihgiris.composePPT.graphics.ComposePPTCanvas
 import com.fatihgiris.composePPT.graphics.ComposePPTDisplay
 import com.fatihgiris.composePPT.node.ComposePPTNode
@@ -26,13 +23,13 @@ fun runComposePPT(
     val frameClock = BroadcastFrameClock()
 
     // This context is used to run Recomposer. Parenting the job to the runBlocking
-    // in order to be able to cancel during the cancellation of all children
+    // in order to be able to cancel during the cancellation of all children.
+    // Do not use this context to launch any coroutine since this context is considered
+    // only used by Recomposer.
     val effectCoroutineContext = Job(coroutineContext[Job]) + frameClock
 
     // Create a root node to be given to applier during the composition creation
     val rootNode = PresentationNode()
-
-    lateinit var composition: Composition
 
     launch {
         // This wires up the callbacks needed for the state object changes. Without this
@@ -40,30 +37,48 @@ fun runComposePPT(
         SnapshotManager.ensureStarted()
     }
 
-    // Launching with effect coroutine context since this context will be used to
-    // check & cancel depending on if there is any job ongoing with composition.
-    launch(effectCoroutineContext) {
-        // Start the initial composition
-        withRunningRecomposer { recomposer ->
-            composition = rootNode.setContent(recomposer, content)
-        }
+    val recomposer = Recomposer(effectCoroutineContext)
+    val composition = rootNode.setContent(recomposer, content)
+
+    // Starting undispatched in order not to send a frame before the recomposer
+    // registers an awaiter.
+    launch(context = frameClock, start = CoroutineStart.UNDISPATCHED) {
+        recomposer.runRecomposeAndApplyChanges()
     }
 
     launch {
         frameClock.dispatchFrame(
-            refreshRateMillis = 500L,
+            refreshRateMillis = 1000L,
             timeNanos = {
                 System.nanoTime()
             },
             frameCallback = {
                 display(rootNode, presentationFileName)
 
-                val hasUncompletedJob = effectCoroutineContext.job.children.any { !it.isCompleted }
+                // This is the job used as a parent for effects in the recomposer. See: Recomposer.effectJob
+                val recomposerEffectJob = effectCoroutineContext.job.children.first()
+
+                // Whether there is any ongoing job whose parent is effect job. (e.g LaunchedEffect etc.)
+                val hasUncompletedJob = recomposerEffectJob.children.any { !it.isCompleted }
 
                 if (!hasUncompletedJob) {
+                    // Even though all the effect jobs are completed, there might be some snapshot
+                    // invalidations which the recomposer might not have been notified. In other words,
+                    // if a state object is updated, wait for the recomposer to get notified.
+                    // TODO: Find a better way to deal with this race condition
+                    //  Might be related: https://issuetracker.google.com/issues/169425431
+                    delay(500)
+
+                    // One last frame sending to recompose it for the last time
+                    frameClock.sendFrame(System.nanoTime())
+
+                    // Display the last frame
+                    display(rootNode, presentationFileName)
+
                     // This will dispose the composition and send forget events to
                     // remember observers (i.e DisposableEffect)
                     composition.dispose()
+                    recomposer.close()
 
                     // Cancel all child coroutines started from this runBlocking in order to
                     // end the process
@@ -82,7 +97,7 @@ fun runComposePPT(
 internal suspend fun BroadcastFrameClock.dispatchFrame(
     refreshRateMillis: Long,
     timeNanos: () -> Long,
-    frameCallback: () -> Unit = {}
+    frameCallback: suspend () -> Unit = {}
 ) {
     while (true) {
         sendFrame(timeNanos())

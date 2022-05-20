@@ -35,7 +35,7 @@ abstract class ComposePPTNode {
 }
 
 /**
- * Starts the composition from the [ComposePPTNode].
+ * Creates the composition from the [ComposePPTNode] and sets its content.
  */
 fun ComposePPTNode.setContent(
     parent: CompositionContext,

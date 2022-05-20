@@ -156,4 +156,28 @@ class ComposePPTTest {
             }
         }
     }
+
+    @Test
+    fun recomposeAfterStateValueChanged() {
+        var isRecompositionTriggered = false
+
+        runComposePPT {
+            var valueToTriggerRecomposition by remember { mutableStateOf(0) }
+
+            LaunchedEffect(Unit) {
+                delay(1000)
+                isRecompositionTriggered = true
+
+                // Trigger recomposition
+                valueToTriggerRecomposition = 1
+            }
+
+            // Verify that this composable labmda is invoked after valueToTriggerRecomposition
+            // has been changed
+            if (isRecompositionTriggered) assert(valueToTriggerRecomposition == 1)
+        }
+
+        // Recomposition should have been triggered
+        assert(isRecompositionTriggered)
+    }
 }
