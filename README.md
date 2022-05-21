@@ -2,6 +2,10 @@
 
 An experimental UI toolkit for creating PowerPoint presentations using Compose. Inspired by [Glance](https://developer.android.com/jetpack/androidx/releases/glance) and [Mosaic](https://github.com/JakeWharton/mosaic).
 
+<p align="middle">
+  <img src="art/banner.png" />
+</p>
+
 ## Why?
 
 This project is created just for fun and demonstrate the power of Compose Runtime 💪.
