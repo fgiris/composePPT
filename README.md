@@ -10,6 +10,24 @@ An experimental UI toolkit for creating PowerPoint presentations using Compose. 
 
 This project is created just for fun and demonstrate the power of Compose Runtime 💪.
 
+## Download 
+First, add the composePPT dependency from maven central. You should also add the compose compiler to kotlin compiler classpath.
+
+```kotlin
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("com.fatihgiris.composePPT:composePPT:0.1.0")
+    
+    // Add the compose compiler to kotlin compiler classpath
+    add(
+        org.jetbrains.kotlin.gradle.plugin.PLUGIN_CLASSPATH_CONFIGURATION_NAME, 
+        "org.jetbrains.compose.compiler:compiler:1.1.1" // Compatible with Kotlin 1.6.10
+    ) 
+}
+```
 ## Usage
 
 There is a single entry point called `runComposePPT` to create a presentation. 
@@ -226,3 +244,21 @@ runComposePPT {
 
 ## Limitations
 You can only use `LaunchedEffect` to launch a coroutine. Even though using `rememberCoroutineScope` will work, it will not terminate the program. So you have to manually terminate it in order the presentation file to be created.
+
+## License
+
+```
+Copyright 2022 Fatih Giris
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
