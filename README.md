@@ -1,6 +1,6 @@
 # ComposePPT
 
-An experimental UI toolkit for creating PowerPoint presentations using Compose. Inspired by [Glance](https://developer.android.com/jetpack/androidx/releases/glance) and [Mosaic](https://github.com/JakeWharton/mosaic).
+An experimental UI toolkit for generating PowerPoint presentation files(.pptx) using Compose. Inspired by [Glance](https://developer.android.com/jetpack/androidx/releases/glance) and [Mosaic](https://github.com/JakeWharton/mosaic).
 
 <p align="middle">
   <img src="art/banner.png" />
