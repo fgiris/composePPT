@@ -24,7 +24,7 @@ dependencies {
     // Add the compose compiler to kotlin compiler classpath
     add(
         org.jetbrains.kotlin.gradle.plugin.PLUGIN_CLASSPATH_CONFIGURATION_NAME, 
-        "org.jetbrains.compose.compiler:compiler:1.1.1" // Compatible with Kotlin 1.6.10
+        "org.jetbrains.compose.compiler:compiler:1.4.5" // Compatible with Kotlin 1.8.20
     ) 
 }
 ```
