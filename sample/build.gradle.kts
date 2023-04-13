@@ -8,5 +8,5 @@ dependencies {
     implementation(project(":composePPT"))
 
     // Add the compose compiler to kotlin compiler classpath
-    add(PLUGIN_CLASSPATH_CONFIGURATION_NAME, "org.jetbrains.compose.compiler:compiler:1.1.1")
+    add(PLUGIN_CLASSPATH_CONFIGURATION_NAME, "org.jetbrains.compose.compiler:compiler:1.4.5")
 }

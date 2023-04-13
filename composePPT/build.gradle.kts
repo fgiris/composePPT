@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    api("org.jetbrains.compose.runtime:runtime:1.1.1")
+    api("org.jetbrains.compose.runtime:runtime:1.4.0")
 
     implementation("org.apache.poi:poi:5.2.2")
     implementation("org.apache.poi:poi-ooxml:5.2.2")
@@ -14,7 +14,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
 
     // Add the compose compiler to kotlin compiler classpath
-    add(PLUGIN_CLASSPATH_CONFIGURATION_NAME, "org.jetbrains.compose.compiler:compiler:1.1.1")
+    add(PLUGIN_CLASSPATH_CONFIGURATION_NAME, "org.jetbrains.compose.compiler:compiler:1.4.5")
 }
 
 tasks.test {
